@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Knowledge check{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('course_detail', slug=course.slug) }}">{{ course.title }}</a> <span>/</span> Quiz{% endblock %}
+{% block content %}
+<div class="quiz-wrap"><div class="eyebrow">KNOWLEDGE CHECK</div><h1>Little check-in, <span>big progress.</span></h1><p class="lead">{{ course.title }} · {{ course.quiz|length }} questions</p>
+<form method="post" class="panel quiz-form">
+{% for q in course.quiz %}{% set qi = loop.index0 %}<fieldset class="question-block"><legend><span class="question-number">{{ '%02d'|format(loop.index) }}</span>{{ q.q }}</legend><div class="answer-options">{% for option in q.options %}<label class="answer-option"><input type="radio" name="q{{ qi }}" value="{{ loop.index0 }}" required><span class="option-letter">{{ 'ABCD'[loop.index0] }}</span><span>{{ option }}</span></label>{% endfor %}</div></fieldset>{% endfor %}
+<div class="quiz-submit"><span>Choose one answer for each question.</span><button class="btn btn-primary" type="submit">Submit answers <span>→</span></button></div>
+</form></div>
+{% endblock %}

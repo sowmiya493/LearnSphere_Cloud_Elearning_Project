@@ -1,0 +1,248 @@
+
+{% extends "base.html" %}
+
+{% block title %}Overview{% endblock %}
+
+{% block content %}
+
+<!-- WELCOME SECTION -->
+<section class="welcome-row">
+    <div>
+        <div class="eyebrow">
+            <span class="spark">✦</span>
+            YOUR LEARNING SPACE
+        </div>
+
+        <h1>
+            Keep your curiosity<br>
+            <span>in motion.</span>
+        </h1>
+
+        <p class="lead">
+            Welcome back, {{ current_learner }}.
+            Your next breakthrough starts here.
+        </p>
+    </div>
+
+    <div class="welcome-art">
+        <div class="art-glow"></div>
+        <div class="art-orbit orbit-one"></div>
+        <div class="art-orbit orbit-two"></div>
+        <div class="art-book">✧</div>
+        <span class="art-star star-a">✦</span>
+        <span class="art-star star-b">✧</span>
+        <span class="art-caption">LEARN · EXPLORE · GROW</span>
+    </div>
+</section>
+
+
+<!-- STATISTICS SECTION -->
+<section class="stat-grid">
+
+    <!-- LESSON PROGRESS -->
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Lessons completed</span>
+            <span class="stat-icon lilac">✓</span>
+        </div>
+
+        <div class="stat-number">
+            {{ total_done }}
+            <small>/ {{ total_lessons }}</small>
+        </div>
+
+        <div class="stat-foot">
+            Small steps, real progress
+        </div>
+
+        <div class="mini-track">
+            <span style="width: {{ progress_percentage }}%"></span>
+        </div>
+    </div>
+
+
+    <!-- QUIZ AVERAGE -->
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Recent quiz average</span>
+            <span class="stat-icon mint">↗</span>
+        </div>
+
+        <div class="stat-number">
+            {{ avg_score }}<small>%</small>
+        </div>
+
+        <div class="stat-foot">
+            {% if avg_score >= 70 %}
+                Keep up the momentum!
+            {% elif avg_score > 0 %}
+                Keep practising to improve your score.
+            {% else %}
+                Take a quiz to build your score.
+            {% endif %}
+        </div>
+
+        <div class="mini-track mint-track">
+            <span style="width: {{ avg_score }}%"></span>
+        </div>
+    </div>
+
+
+    <!-- COURSE COUNT -->
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Learning paths</span>
+            <span class="stat-icon peach">⌘</span>
+        </div>
+
+        <div class="stat-number">
+            {{ courses|length }}
+            <small>courses</small>
+        </div>
+
+        <div class="stat-foot">
+            Curated for your next step
+        </div>
+
+        <div class="stat-chips">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- COURSE SECTION HEADING -->
+<section class="section-head">
+    <div>
+        <div class="eyebrow">MADE FOR YOUR NEXT STEP</div>
+        <h2>
+            Continue learning
+            <span class="heading-dot">.</span>
+        </h2>
+    </div>
+
+    <a class="text-link" href="{{ url_for('courses') }}">
+        Explore all courses <span>→</span>
+    </a>
+</section>
+
+
+<!-- COURSE CARDS -->
+<section class="course-grid">
+
+    {% for course in courses %}
+
+    <article class="course-card">
+
+        <div class="course-visual visual-{{ course.color|default('lilac') }}">
+
+            <div class="visual-top">
+                <span class="category-pill">
+                    {{ course.category|default('Learning') }}
+                </span>
+
+                <span class="course-emoji">
+                    {{ course.emoji|default(course.icon|default('📘')) }}
+                </span>
+            </div>
+
+            <div class="visual-graphic graphic-{{ course.color|default('lilac') }}">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="visual-bottom">
+                <span>{{ course.level|default('Beginner') }}</span>
+                <span>◷ {{ course.duration|default((course.lessons|length|string) ~ ' lessons') }}</span>
+            </div>
+
+        </div>
+
+
+        <div class="course-body">
+
+            <h3>{{ course.title }}</h3>
+
+            <p>{{ course.description }}</p>
+
+            <div class="progress-label">
+                <span>{{ course.progress|default(0) }}% complete</span>
+                <span>{{ course.lessons|length }} lessons</span>
+            </div>
+
+            <div class="progress-track">
+                <span style="width: {{ course.progress|default(0) }}%"></span>
+            </div>
+
+            <a class="course-action"
+               href="{{ url_for('course', slug=course.slug) }}">
+                Open learning path <span>↗</span>
+            </a>
+
+        </div>
+
+    </article>
+
+    {% else %}
+
+    <p>No courses are available yet. Please check back later.</p>
+
+    {% endfor %}
+
+</section>
+
+
+<!-- BOTTOM INFORMATION CARDS -->
+<section class="bottom-grid">
+
+    <!-- STUDY ASSISTANT -->
+    <div class="tip-card">
+
+        <div class="tip-icon">✧</div>
+
+        <div>
+            <div class="eyebrow">A LITTLE GUIDANCE</div>
+
+            <h3>Make learning work for you.</h3>
+
+            <p>
+                Ask the study buddy to explain a cloud concept,
+                or take a short quiz to see what you've retained.
+            </p>
+
+            <a href="{{ url_for('assistant') }}" class="text-link">
+                Meet your study buddy <span>→</span>
+            </a>
+        </div>
+
+        <div class="tip-spark">✦</div>
+
+    </div>
+
+
+    <!-- CLOUD COMPUTING CARD -->
+    <div class="research-card">
+
+        <div class="research-icon">⌁</div>
+
+        <div class="eyebrow">INSPIRED BY RESEARCH</div>
+
+        <h3>Learning, powered by cloud.</h3>
+
+        <p>
+            Explore cloud architecture, service models,
+            performance, and security in the learning pathway.
+        </p>
+
+        <a href="{{ url_for('course', slug='cloud-computing') }}"
+           class="text-link">
+            Explore the concepts <span>→</span>
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

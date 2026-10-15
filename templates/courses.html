@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}My learning{% endblock %}
+{% block breadcrumb %}My learning{% endblock %}
+{% block content %}
+<div class="page-intro"><div class="eyebrow">YOUR KNOWLEDGE LIBRARY</div><h1>Explore your <span>next chapter.</span></h1><p class="lead">Thoughtfully arranged learning paths to help you build real skills.</p></div>
+<div class="filter-row"><span class="filter-active">All learning paths <b>{{ courses|length }}</b></span><span class="filter-note">Choose a course to view lessons and take a quiz.</span></div>
+<section class="course-grid">
+{% for course in courses %}
+  <article class="course-card">
+    <div class="course-visual visual-{{ course.color }}"><div class="visual-top"><span class="category-pill">{{ course.category }}</span><span class="course-emoji">{{ course.emoji }}</span></div><div class="visual-graphic graphic-{{ course.color }}"><span></span><span></span><span></span></div><div class="visual-bottom"><span>{{ course.level }}</span><span>◷ {{ course.duration }}</span></div></div>
+    <div class="course-body"><h3>{{ course.title }}</h3><p>{{ course.description }}</p><div class="progress-label"><span>{{ course.progress }}% complete</span><span>{{ course.lessons|length }} lessons</span></div><div class="progress-track"><span style="width:{{ course.progress }}%"></span></div><a class="course-action" href="{{ url_for('course_detail', slug=course.slug) }}">View course <span>↗</span></a></div>
+  </article>
+{% endfor %}
+</section>
+<div class="info-banner"><span class="info-symbol">i</span><div><strong>Learning tip</strong><p>Try one lesson at a time, then use the course quiz to reinforce what you learned.</p></div></div>
+{% endblock %}

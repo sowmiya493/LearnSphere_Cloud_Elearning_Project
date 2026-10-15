@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}My profile{% endblock %}
+{% block breadcrumb %}My profile{% endblock %}
+{% block content %}
+<div class="page-intro"><div class="eyebrow">YOUR LEARNING IDENTITY</div><h1>A space that's <span>yours.</span></h1><p class="lead">Update your demo learner name and review your learning activity.</p></div>
+<div class="profile-grid"><section class="panel profile-panel"><div class="profile-avatar">{{ current_learner[:1]|upper }}</div><div class="eyebrow">LEARNER PROFILE</div><h2>{{ current_learner }}</h2><p class="muted">LearnSphere student</p><form method="post" class="profile-form"><label for="name">Display name</label><input id="name" name="name" value="{{ current_learner }}" maxlength="80" required><button class="btn btn-primary" type="submit">Save profile</button></form><p class="small-note">This is a demo profile, not secure account authentication.</p></section>
+<section class="panel activity-panel"><div class="eyebrow">YOUR ACTIVITY</div><h2>Learning snapshot</h2><div class="activity-list">{% set count = completed|length %}<div class="activity-item"><span class="activity-icon">✓</span><div><strong>{{ count }} lessons completed</strong><small>Saved in the local database</small></div></div><div class="activity-item"><span class="activity-icon">✎</span><div><strong>{{ results|length }} quiz attempts</strong><small>{% if results %}Latest score: {{ results[0].score }}/{{ results[0].total }}{% else %}Take a quiz to begin tracking scores{% endif %}</small></div></div><div class="activity-item"><span class="activity-icon">☁</span><div><strong>Local learning environment</strong><small>Cloud deployment can be configured later</small></div></div></div></section></div>
+{% endblock %}

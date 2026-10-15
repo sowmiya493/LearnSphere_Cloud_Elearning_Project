@@ -1,0 +1,128 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - LearnSphere{% endblock %}
+
+{% block content %}
+
+<section class="section-head">
+    <div>
+        <div class="eyebrow">YOUR LEARNING PATH</div>
+        <h1>{{ course.icon }} {{ course.title }}</h1>
+        <p class="lead">{{ course.description }}</p>
+    </div>
+
+    <a class="text-link" href="{{ url_for('courses') }}">
+        ← All courses
+    </a>
+</section>
+
+{% set completed_count = namespace(value=0) %}
+
+{% for lesson_item in course.lessons %}
+    {% if lesson_item.id in completed_ids %}
+        {% set completed_count.value = completed_count.value + 1 %}
+    {% endif %}
+{% endfor %}
+
+<section class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Total lessons</span>
+            <span class="stat-icon lilac">📘</span>
+        </div>
+        <div class="stat-number">{{ course.lessons|length }}</div>
+        <div class="stat-foot">Lessons in this learning path</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Completed lessons</span>
+            <span class="stat-icon mint">✓</span>
+        </div>
+        <div class="stat-number">
+            {{ completed_count.value }}
+            <small>/ {{ course.lessons|length }}</small>
+        </div>
+        <div class="stat-foot">Keep learning at your own pace</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Course progress</span>
+            <span class="stat-icon peach">↗</span>
+        </div>
+        <div class="stat-number">
+            {% if course.lessons|length > 0 %}
+                {{ (completed_count.value / course.lessons|length * 100)|round|int }}
+            {% else %}
+                0
+            {% endif %}
+            <small>%</small>
+        </div>
+        <div class="stat-foot">Your learning progress</div>
+    </div>
+</section>
+
+<section class="section-head">
+    <div>
+        <div class="eyebrow">LEARN STEP BY STEP</div>
+        <h2>Course lessons</h2>
+    </div>
+</section>
+
+<section class="course-grid">
+    {% for lesson_item in course.lessons %}
+        <article class="course-card">
+            <div class="course-body">
+
+                <div class="eyebrow">
+                    LESSON {{ loop.index }}
+                </div>
+
+                <h3>{{ lesson_item.title }}</h3>
+
+                <p>{{ lesson_item.takeaway }}</p>
+
+                {% if lesson_item.id in completed_ids %}
+                    <p>✓ Completed</p>
+                {% else %}
+                    <p>○ Not completed yet</p>
+                {% endif %}
+
+                <a
+                    class="course-action"
+                    href="{{ url_for('lesson', lesson_id=lesson_item.id) }}"
+                >
+                    {% if lesson_item.id in completed_ids %}
+                        Review lesson
+                    {% else %}
+                        Start lesson
+                    {% endif %}
+                    <span>→</span>
+                </a>
+
+            </div>
+        </article>
+    {% endfor %}
+</section>
+
+<section class="bottom-grid">
+    <div class="tip-card">
+        <div class="tip-icon">✧</div>
+        <div>
+            <div class="eyebrow">TEST YOUR KNOWLEDGE</div>
+            <h3>Ready for a quiz?</h3>
+            <p>Answer a few questions to check what you have learned.</p>
+
+            <a
+                class="text-link"
+                href="{{ url_for('quiz', slug=course.slug) }}"
+            >
+                Take course quiz →
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

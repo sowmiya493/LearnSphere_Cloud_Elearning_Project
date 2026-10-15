@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }} - LearnSphere{% endblock %}
+
+{% block content %}
+
+<style>
+    .lesson-page {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 30px 20px 50px;
+    }
+
+    .lesson-breadcrumb {
+        margin-bottom: 24px;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .lesson-breadcrumb a {
+        color: #6366f1;
+        text-decoration: none;
+    }
+
+    .lesson-header {
+        margin-bottom: 25px;
+    }
+
+    .lesson-header h1 {
+        margin: 10px 0;
+        color: #1e293b;
+        font-size: clamp(26px, 4vw, 36px);
+    }
+
+    .lesson-header p {
+        color: #64748b;
+        line-height: 1.7;
+    }
+
+    .lesson-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+    }
+
+    .lesson-card h2 {
+        color: #1e293b;
+        margin-top: 0;
+        margin-bottom: 16px;
+        font-size: 22px;
+    }
+
+    .lesson-content {
+        color: #475569;
+        font-size: 16px;
+        line-height: 1.9;
+        white-space: pre-line;
+    }
+
+    .takeaway {
+        background: #eef2ff;
+        border-left: 4px solid #6366f1;
+        border-radius: 8px;
+        padding: 16px;
+        color: #3730a3;
+        line-height: 1.7;
+    }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #0f172a;
+    }
+
+    .video-container iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+    }
+
+    .transcript-text {
+        color: #475569;
+        font-size: 15px;
+        line-height: 1.9;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .transcript-notice {
+        padding: 14px;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #64748b;
+        line-height: 1.7;
+    }
+
+    .lesson-status {
+        margin-bottom: 18px;
+        color: #15803d;
+        font-weight: 600;
+    }
+
+    .lesson-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .lesson-button {
+        display: inline-block;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .lesson-button-primary {
+        background: #4f46e5;
+        color: #ffffff;
+    }
+
+    .lesson-button-primary:hover {
+        background: #4338ca;
+    }
+
+    .lesson-button-secondary {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .lesson-button-secondary:hover {
+        background: #e2e8f0;
+    }
+
+    .lesson-completed {
+        background: #dcfce7;
+        color: #166534;
+        padding: 12px 16px;
+        border-radius: 9px;
+        font-weight: 600;
+    }
+
+    .lesson-flash {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    @media (max-width: 600px) {
+        .lesson-page {
+            padding: 20px 12px 35px;
+        }
+
+        .lesson-card {
+            padding: 17px;
+        }
+
+        .lesson-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .lesson-button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<main class="lesson-page">
+
+    <!-- Breadcrumb navigation -->
+    <div class="lesson-breadcrumb">
+        <a href="{{ url_for('index') }}">Home</a>
+        /
+        <a href="{{ url_for('courses') }}">Courses</a>
+        /
+        <a href="{{ url_for('course', slug=course.slug) }}">
+            {{ course.title }}
+        </a>
+        /
+        <span>{{ lesson.title }}</span>
+    </div>
+
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="lesson-flash">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- Lesson heading -->
+    <header class="lesson-header">
+        <p>{{ course.icon }} {{ course.title }}</p>
+
+        <h1>{{ lesson.title }}</h1>
+
+        <p>
+            Study the lesson notes, watch the video if available,
+            and review the transcript to strengthen your understanding.
+        </p>
+    </header>
+
+
+    <!-- Lesson notes -->
+    <section class="lesson-card">
+        <h2>📘 Lesson Content</h2>
+
+        <div class="lesson-content">{{ lesson.content }}</div>
+    </section>
+
+
+    <!-- Key takeaway -->
+    {% if lesson.takeaway %}
+        <section class="lesson-card">
+            <h2>🎯 Key Takeaway</h2>
+
+            <div class="takeaway">
+                {{ lesson.takeaway }}
+            </div>
+        </section>
+    {% endif %}
+
+
+    <!-- YouTube video -->
+    <section class="lesson-card">
+        <h2>🎬 Lesson Video</h2>
+
+        {% if lesson.youtube_embed_url %}
+
+            <div class="video-container">
+                <iframe
+                    src="{{ lesson.youtube_embed_url }}"
+                    title="{{ lesson.title }}"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write;
+                           encrypted-media; gyroscope; picture-in-picture;
+                           web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <p>
+                <a
+                    href="{{ lesson.video_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    Open video on YouTube
+                </a>
+            </p>
+
+        {% else %}
+
+            <p class="transcript-notice">
+                A video has not been added to this lesson yet.
+                You can continue learning using the lesson notes above.
+            </p>
+
+            <a
+                class="lesson-button lesson-button-secondary"
+                href="{{ lesson.youtube_search_url }}"
+                target="_blank"
+                rel="noopener noreferrer">
+                Search for a lesson video
+            </a>
+
+        {% endif %}
+    </section>
+
+
+    <!-- Video transcript -->
+    <section class="lesson-card">
+        <h2>📝 Video Transcript</h2>
+
+        {% if lesson.transcript %}
+
+            <p class="transcript-text">{{ lesson.transcript }}</p>
+
+        {% elif lesson.video_url %}
+
+            <div class="transcript-notice">
+                <p>
+                    A transcript could not be retrieved for this video.
+                </p>
+
+                <p>
+                    The video may not have captions available, or YouTube
+                    may restrict transcript access. You can still watch
+                    the video and use the lesson notes above.
+                </p>
+
+                <a
+                    href="{{ lesson.video_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    View video on YouTube
+                </a>
+            </div>
+
+        {% else %}
+
+            <p class="transcript-notice">
+                No video is configured for this lesson, so there is
+                no video transcript to display.
+            </p>
+
+        {% endif %}
+    </section>
+
+
+    <!-- Lesson completion -->
+    <section class="lesson-card">
+        <h2>✅ Lesson Progress</h2>
+
+        {% if completed %}
+
+            <p class="lesson-status">
+                You have completed this lesson!
+            </p>
+
+            <span class="lesson-completed">
+                Completed
+            </span>
+
+        {% else %}
+
+            <p>
+                Finished studying this lesson? Mark it as completed
+                to update your learning progress.
+            </p>
+
+            <form
+                action="{{ url_for('complete_lesson',
+                                  lesson_id=lesson.id) }}"
+                method="POST">
+
+                <button
+                    type="submit"
+                    class="lesson-button lesson-button-primary">
+                    Mark as Completed
+                </button>
+
+            </form>
+
+        {% endif %}
+
+        <div class="lesson-actions">
+
+            <a
+                href="{{ url_for('course', slug=course.slug) }}"
+                class="lesson-button lesson-button-secondary">
+                ← Back to Course
+            </a>
+
+            <a
+                href="{{ url_for('quiz', slug=course.slug) }}"
+                class="lesson-button lesson-button-primary">
+                Take Course Quiz →
+            </a>
+
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}AI study buddy{% endblock %}
+{% block breadcrumb %}AI study buddy{% endblock %}
+{% block content %}
+<div class="assistant-header"><div class="assistant-avatar">✧</div><div><div class="eyebrow">YOUR PERSONAL STUDY SPACE</div><h1>Hey there, curious <span>mind.</span></h1><p class="lead">Ask a question. Untangle a concept. Find your next step.</p></div></div>
+<div class="assistant-layout"><section class="panel chat-panel"><div class="chat-top"><div class="bot-dot">✦</div><div><strong>LearnSphere Buddy</strong><small><i></i> Topic guide · Demo mode</small></div><span class="chat-tag">STUDY MODE</span></div><div class="chat-history"><div class="chat-message bot"><span class="chat-mini-avatar">✧</span><div><small>LEARNING BUDDY</small><p>Hi {{ current_learner }}! I'm here to help you explore cloud computing and e-learning. What are you curious about today?</p></div></div>
+{% if prompt %}<div class="chat-message user"><div><small>YOU</small><p>{{ prompt }}</p></div></div>{% endif %}
+{% if answer %}<div class="chat-message bot"><span class="chat-mini-avatar">✧</span><div><small>LEARNING BUDDY</small><p>{{ answer }}</p></div></div>{% endif %}</div>
+<form method="post" class="chat-input"><textarea name="prompt" rows="2" placeholder="Ask about SaaS, cloud architecture, security..." required>{{ prompt if answer is none else '' }}</textarea><button class="send-button" type="submit" aria-label="Send question">↑</button></form><div class="chat-disclaimer">This starter assistant uses topic-based responses, not a live generative AI model.</div></section>
+<aside class="panel prompt-panel"><div class="eyebrow">NEED A STARTING POINT?</div><h3>Try asking...</h3><form method="post" class="suggestion-list">{% for suggestion in ['Explain SaaS, PaaS and IaaS','What does cloud e-learning architecture look like?','How can a learning platform protect student data?','What challenges did the IEEE paper identify?'] %}<button name="prompt" value="{{ suggestion }}" type="submit" class="suggestion">{{ suggestion }}<span>↗</span></button>{% endfor %}</form><div class="privacy-note"><span>◇</span><p><strong>Learn thoughtfully</strong><br>Don't enter passwords or private personal information into a study assistant.</p></div></aside></div>
+{% endblock %}

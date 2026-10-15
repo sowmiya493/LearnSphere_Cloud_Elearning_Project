@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>{% block title %}LearnSphere{% endblock %} · LearnSphere</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">L</span><span>learn<span class="brand-light">sphere</span><small>LEARNING CLOUD</small></span></a>
+    <div class="side-label">WORKSPACE</div>
+    <nav class="nav-links">
+      <a class="{{ 'active' if request.endpoint == 'index' else '' }}" href="{{ url_for('index') }}"><span>⌂</span> Overview</a>
+      <a class="{{ 'active' if request.endpoint in ['courses','course_detail','lesson','quiz'] else '' }}" href="{{ url_for('courses') }}"><span>▤</span> My learning</a>
+      <a class="{{ 'active' if request.endpoint == 'assistant' else '' }}" href="{{ url_for('assistant') }}"><span>✧</span> AI study buddy <em>NEW</em></a>
+      <a class="{{ 'active' if request.endpoint == 'profile' else '' }}" href="{{ url_for('profile') }}"><span>◉</span> My profile</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="cloud-card"><div class="cloud-orb">☁</div><strong>Your cloud campus</strong><p>Learn from anywhere. Grow every day.</p><div class="cloud-status"><i></i> Local demo active</div></div>
+      <div class="side-foot">LEARNING IS A JOURNEY <span>✦</span></div>
+    </div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar">
+      <div class="mobile-brand"><span class="brand-mark">L</span> LearnSphere</div>
+      <div class="breadcrumb">Workspace <span>/</span> {% block breadcrumb %}Overview{% endblock %}</div>
+      <div class="top-actions"><span class="top-pill"><i></i> Learning space</span><a href="{{ url_for('profile') }}" class="avatar" title="Profile">{{ current_learner[:1]|upper }}</a></div>
+    </header>
+    <div class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <footer class="footer"><span>© {{ year }} LearnSphere</span><span>Built for curious minds <b>✦</b></span></footer>
+    </div>
+  </main>
+</div>
+<script>
+  document.querySelectorAll('.flash').forEach(el => setTimeout(() => {el.style.opacity='0'; el.style.transform='translateY(-4px)'}, 4200));
+</script>
+</body>
+</html>
